@@ -1,0 +1,34 @@
+name: aur-publish
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  aur-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Publish AUR package
+        uses: KSXGitHub/github-actions-deploy-aur@v2.2.3
+        with:
+          # AUR package name
+          pkgname: flameshot-git
+          # Path to PKGBUILD file
+          pkgbuild: ./PKGBUILD
+          # The username to use when creating the new commit
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          # The email to use when creating the new commit
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          # Your private key with access to AUR package
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          # Commit message to use when creating the new commit (optional, default is Update PKGBUILD and .SRCINFO with GitHub Actions)
+          commit_message: Update AUR package
+          # Allow empty commits, i.e. commits with no change (optional, default is true)
+          allow_empty_commits: True
+          # Use --force when push to the AUR (optional, default is false)
+          force_push: True
+          # Comma-separated list of types to use when adding aur.archlinux.org to known hosts
+          ssh_keyscan_types: rsa,dsa,ecdsa,ed25519
